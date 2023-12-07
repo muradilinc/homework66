@@ -28,6 +28,7 @@ const NewMeal = () => {
         return;
       }
       setMeal(meals);
+      setDate(meals.date);
     } catch (error) {
       alert('Error ' + error);
     } finally {
@@ -59,7 +60,7 @@ const NewMeal = () => {
       if (id) {
         await axiosApi.put(`/meals/${id}.json`, {
           ...meal,
-          date: id ? meal.date : date
+          date: date
         });
         navigate(HOME_PAGE);
       } else {
@@ -76,7 +77,6 @@ const NewMeal = () => {
     }
   };
 
-
   return (
     <div className="flex flex-col justify-center items-center h-[80vh]">
       {
@@ -85,7 +85,7 @@ const NewMeal = () => {
           :
           <Form
             meal={meal}
-            date={id ? meal.date : date}
+            date={date}
             changeMeal={changeMeal}
             createMeal={createMeal}
             changeDate={(date) => setDate(date)}
