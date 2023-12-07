@@ -11,9 +11,11 @@ import {Meal, MealsList} from '../../types';
 const App = () => {
   const location = useLocation();
   const [meals, setMeals] = useState<Meal[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const getMeals = useCallback( async () => {
     try {
+      setLoading(true);
       const mealsResponse = await axiosApi.get<MealsList | null>('/meals.json');
       const meals = mealsResponse.data;
 
@@ -32,6 +34,8 @@ const App = () => {
       }
     } catch (error) {
       alert('Error ' + error);
+    } finally {
+      setLoading(false);
     }
   }, []);
 
@@ -44,10 +48,13 @@ const App = () => {
 
   const removeMeal = async (id: string) => {
     try {
+      setLoading(true);
       await axiosApi.delete(`/meals/${id}.json`);
       void getMeals();
     } catch (error) {
       alert('Error ' + error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,7 +62,7 @@ const App = () => {
     <Layout>
       <Routes>
         <Route path={HOME_PAGE} element={
-          <HomePage meals={meals} remove={removeMeal}/>
+          <HomePage meals={meals} remove={removeMeal} loading={loading}/>
         }>
           <Route path={`${HOME_PAGE}/:id${EDIT_PAGE}`} element={<NewMeal/>}/>
         </Route>
