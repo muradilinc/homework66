@@ -6,9 +6,10 @@ import {NotePencil, Trash} from '@phosphor-icons/react';
 
 interface Props {
   meals: Meal[];
+  remove: (id: string) => void;
 }
 
-const HomePage: React.FC<Props> = ({meals}) => {
+const HomePage: React.FC<Props> = ({meals, remove}) => {
   const {id} = useParams();
   const navigate = useNavigate();
 
@@ -48,7 +49,7 @@ const HomePage: React.FC<Props> = ({meals}) => {
                   </div>
                   <div className="col-span-1 grid place-content-end">
                     <button onClick={() => navigate(`/${meal.id}${EDIT_PAGE}`)}><NotePencil size={32}/></button>
-                    <button><Trash className="text-red-500" size={32} /></button>
+                    <button onClick={() => remove(meal.id)}><Trash className="text-red-500" size={32} /></button>
                   </div>
                 </div>
               </div>

@@ -18,18 +18,18 @@ const App = () => {
       const meals = mealsResponse.data;
 
       if (!meals) {
-        return;
+        setMeals([]);
+      } else {
+        const newMeals: Meal[] = Object.keys(meals).map((id) => {
+          const meal = meals[id];
+          return {
+            ...meal,
+            id
+          };
+        });
+
+        setMeals(newMeals);
       }
-
-      const newMeals: Meal[] = Object.keys(meals).map((id) => {
-        const meal = meals[id];
-        return {
-          ...meal,
-          id
-        };
-      });
-
-      setMeals(newMeals);
     } catch (error) {
       alert('Error ' + error);
     }
@@ -42,11 +42,20 @@ const App = () => {
     }
   }, [getMeals, location.pathname]);
 
+  const removeMeal = async (id: string) => {
+    try {
+      await axiosApi.delete(`/meals/${id}.json`);
+      void getMeals();
+    } catch (error) {
+      alert('Error ' + error);
+    }
+  };
+
   return (
     <Layout>
       <Routes>
         <Route path={HOME_PAGE} element={
-          <HomePage meals={meals}/>
+          <HomePage meals={meals} remove={removeMeal}/>
         }>
           <Route path={`${HOME_PAGE}/:id${EDIT_PAGE}`} element={<NewMeal/>}/>
         </Route>
