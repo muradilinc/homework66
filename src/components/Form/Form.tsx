@@ -3,16 +3,19 @@ import {useNavigate} from 'react-router-dom';
 import {typesMeal} from '../../constansts/typesMeal';
 import {HOME_PAGE} from '../../constansts/routes';
 import {MutationMeal} from '../../types';
+import DatePicker from "react-datepicker";
 
 interface Props {
   meal: MutationMeal;
+  date: string;
   createMeal: (event: React.FormEvent) => void;
   changeMeal: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  changeDate: (date: string) => void;
   loading: boolean;
   id: string;
 }
 
-const Form: React.FC<Props> = ({meal, createMeal, changeMeal, loading, id}) => {
+const Form: React.FC<Props> = ({meal, date, createMeal, changeMeal, changeDate, loading, id}) => {
   const navigate = useNavigate();
 
   return (
@@ -34,17 +37,25 @@ const Form: React.FC<Props> = ({meal, createMeal, changeMeal, loading, id}) => {
             }
           </select>
         </div>
-        <div className="col-span-1">
-          <input
-            placeholder="Name meal"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            type="text"
-            name="name"
+        <div className="col-span-1 flex justify-end">
+          <DatePicker
             required
-            value={meal.name}
-            onChange={changeMeal}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            selected={date ? new Date(date) : new Date()}
+            onChange={(date) => changeDate(date?.toString() || '')}
           />
         </div>
+      </div>
+      <div className="mb-3">
+        <input
+          placeholder="Name meal"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          type="text"
+          name="name"
+          required
+          value={meal.name}
+          onChange={changeMeal}
+        />
       </div>
       <div>
         <input

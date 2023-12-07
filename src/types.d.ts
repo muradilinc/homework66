@@ -3,6 +3,7 @@ export interface Meal {
   type: string;
   name: string;
   calories: number;
+  date: string;
 }
 
 export type ApiMeal = Omit<Meal, 'id'>;

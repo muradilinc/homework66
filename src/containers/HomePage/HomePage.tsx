@@ -4,6 +4,7 @@ import {NEW_MEAL_PAGE} from '../../constansts/routes';
 import {Meal} from '../../types';
 import Spinner from '../../components/Spinner/Spinner';
 import MealView from '../../components/MealView/MealView';
+import dayjs from 'dayjs';
 
 interface Props {
   meals: Meal[];
@@ -14,14 +15,31 @@ interface Props {
 const HomePage: React.FC<Props> = ({meals, remove, loading}) => {
   const {id} = useParams();
   const navigate = useNavigate();
+  const currentDate = [...meals];
+
+  for (let i = 1; i < currentDate.length; i++) {
+    const current = currentDate[i];
+    let j = i - 1;
+
+    while (j >= 0 && new Date(currentDate[j].date) < new Date(current.date)) {
+      currentDate[j + 1] = currentDate[j];
+      j--;
+    }
+
+    currentDate[j + 1] = current;
+  }
+
+
+  const totalCalories = currentDate.reduce((sum, meal) => {
+    if (dayjs(meal.date).format('DD.MM') === dayjs(new Date()).format('DD.MM')){
+      return sum + Number(meal.calories);
+    }
+    return sum;
+  }, 0);
 
   if (id){
     return <Outlet/>;
   }
-
-  const totalCalories = meals.reduce((sum, meal) => {
-    return sum + Number(meal.calories);
-  }, 0);
 
   return (
     <>
@@ -42,7 +60,7 @@ const HomePage: React.FC<Props> = ({meals, remove, loading}) => {
         </div>
         <div className="my-3 flex flex-col gap-2">
           {
-            loading ? <Spinner/> : <MealView meals={meals} remove={remove}/>
+            loading ? <Spinner/> : <MealView meals={currentDate} remove={remove}/>
           }
         </div>
       </div>

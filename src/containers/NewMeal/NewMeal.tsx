@@ -12,9 +12,11 @@ const NewMeal = () => {
   const [meal, setMeal] = useState<MutationMeal>({
     name: '',
     type: '',
+    date: '',
     calories: 0
   });
   const [loading, setLoading] = useState(false);
+  const [date, setDate] = useState<string>(new Date().toString());
 
   const getMeal = useCallback( async () => {
     try {
@@ -44,7 +46,7 @@ const NewMeal = () => {
 
     setMeal(prevState => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -55,10 +57,16 @@ const NewMeal = () => {
       setLoading(true);
 
       if (id) {
-        await axiosApi.put(`/meals/${id}.json`, meal);
+        await axiosApi.put(`/meals/${id}.json`, {
+          ...meal,
+          date: id ? meal.date : date
+        });
         navigate(HOME_PAGE);
       } else {
-        await axiosApi.post('/meals.json', meal);
+        await axiosApi.post('/meals.json', {
+          ...meal,
+          date
+        });
         navigate(HOME_PAGE);
       }
     } catch (error) {
@@ -68,6 +76,7 @@ const NewMeal = () => {
     }
   };
 
+
   return (
     <div className="flex flex-col justify-center items-center h-[80vh]">
       {
@@ -76,8 +85,10 @@ const NewMeal = () => {
           :
           <Form
             meal={meal}
+            date={id ? meal.date : date}
             changeMeal={changeMeal}
             createMeal={createMeal}
+            changeDate={(date) => setDate(date)}
             id={id ? id : ''}
             loading={loading}
           />
