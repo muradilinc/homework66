@@ -1,9 +1,9 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
+import dayjs from 'dayjs';
+import {Meal} from '../../types';
 import {EDIT_PAGE} from '../../constansts/routes';
 import {NotePencil, Trash} from '@phosphor-icons/react';
-import {useNavigate} from 'react-router-dom';
-import {Meal} from '../../types';
-import dayjs from 'dayjs';
 
 interface Props {
   meal: Meal;

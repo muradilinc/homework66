@@ -1,12 +1,12 @@
+import {useCallback, useEffect, useState} from 'react';
 import {Route, Routes, useLocation} from 'react-router-dom';
-import NotFoundPage from '../NotFoundPage/NotFoundPage';
+import axiosApi from '../../axiosApi';
+import {Meal, MealsList} from '../../types';
 import {EDIT_PAGE, HOME_PAGE, NEW_MEAL_PAGE} from '../../constansts/routes';
+import NotFoundPage from '../NotFoundPage/NotFoundPage';
 import HomePage from '../HomePage/HomePage';
 import Layout from '../../components/Layout/Layout';
 import NewMeal from '../NewMeal/NewMeal';
-import {useCallback, useEffect, useState} from 'react';
-import axiosApi from '../../axiosApi';
-import {Meal, MealsList} from '../../types';
 
 const App = () => {
   const location = useLocation();

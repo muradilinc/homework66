@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Meal, MutationMeal} from '../../types';
-import axiosApi from '../../axiosApi';
 import {useNavigate, useParams} from 'react-router-dom';
+import axiosApi from '../../axiosApi';
+import {Meal, MutationMeal} from '../../types';
 import {HOME_PAGE} from '../../constansts/routes';
 import Form from '../../components/Form/Form';
 import Spinner from '../../components/Spinner/Spinner';

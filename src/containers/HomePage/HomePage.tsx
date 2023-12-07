@@ -1,10 +1,10 @@
 import React from 'react';
 import {Outlet, useNavigate, useParams} from 'react-router-dom';
+import dayjs from 'dayjs';
 import {NEW_MEAL_PAGE} from '../../constansts/routes';
 import {Meal} from '../../types';
 import Spinner from '../../components/Spinner/Spinner';
 import MealView from '../../components/MealView/MealView';
-import dayjs from 'dayjs';
 
 interface Props {
   meals: Meal[];
