@@ -1,15 +1,55 @@
-import {Route, Routes} from 'react-router-dom';
+import {Route, Routes, useLocation} from 'react-router-dom';
 import NotFoundPage from '../NotFoundPage/NotFoundPage';
-import {HOME_PAGE, NEW_MEAL_PAGE} from '../../constansts/routes';
+import {EDIT_PAGE, HOME_PAGE, NEW_MEAL_PAGE} from '../../constansts/routes';
 import HomePage from '../HomePage/HomePage';
 import Layout from '../../components/Layout/Layout';
 import NewMeal from '../NewMeal/NewMeal';
+import {useCallback, useEffect, useState} from 'react';
+import axiosApi from '../../axiosApi';
+import {Meal, MealsList} from '../../types';
 
 const App = () => {
+  const location = useLocation();
+  const [meals, setMeals] = useState<Meal[]>([]);
+
+  const getMeals = useCallback( async () => {
+    try {
+      const mealsResponse = await axiosApi.get<MealsList | null>('/meals.json');
+      const meals = mealsResponse.data;
+
+      if (!meals) {
+        return;
+      }
+
+      const newMeals: Meal[] = Object.keys(meals).map((id) => {
+        const meal = meals[id];
+        return {
+          ...meal,
+          id
+        };
+      });
+
+      setMeals(newMeals);
+    } catch (error) {
+      alert('Error ' + error);
+    }
+  }, []);
+
+
+  useEffect(() => {
+    if (location.pathname === HOME_PAGE) {
+      void getMeals();
+    }
+  }, [getMeals, location.pathname]);
+
   return (
     <Layout>
       <Routes>
-        <Route path={HOME_PAGE} element={<HomePage/>}/>
+        <Route path={HOME_PAGE} element={
+          <HomePage meals={meals}/>
+        }>
+          <Route path={`${HOME_PAGE}/:id${EDIT_PAGE}`} element={<NewMeal/>}/>
+        </Route>
         <Route path={NEW_MEAL_PAGE} element={<NewMeal/>}/>
         <Route path="*" element={<NotFoundPage/>}/>
       </Routes>

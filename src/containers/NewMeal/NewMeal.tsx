@@ -1,14 +1,38 @@
-import React, {useState} from 'react';
-import {Meal} from '../../types';
+import React, {useCallback, useEffect, useState} from 'react';
+import {Meal, MutationMeal} from '../../types';
 import {typesMeal} from '../../constansts/typesMeal';
 import axiosApi from '../../axiosApi';
+import {useNavigate, useParams} from 'react-router-dom';
+import {HOME_PAGE} from '../../constansts/routes';
 
 const NewMeal = () => {
-  const [meal, setMeal] = useState<Meal>({
+  const {id} = useParams();
+  const navigate = useNavigate();
+  const [meal, setMeal] = useState<MutationMeal>({
     name: '',
     type: '',
     calories: 0
   });
+
+  const getMeal = useCallback( async () => {
+    try {
+      const mealsResponse = await axiosApi.get<Meal | null>(`/meals/${id}.json`);
+      const meals = mealsResponse.data;
+
+      if (!meals) {
+        return;
+      }
+      setMeal(meals);
+    } catch (error) {
+      alert('Error ' + error);
+    }
+  }, [id]);
+
+
+  useEffect(() => {
+    void getMeal();
+  }, [getMeal]);
+
 
   const changeMeal = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const {name, value} = event.target;
@@ -23,7 +47,12 @@ const NewMeal = () => {
     event.preventDefault();
 
     try {
-      await axiosApi.post('/meals.json', meal);
+      if (id) {
+        await axiosApi.put(`/meals/${id}.json`, meal);
+        navigate(HOME_PAGE);
+      } else {
+        await axiosApi.post('/meals.json', meal);
+      }
     } catch (error) {
       alert('Error ' + error);
     }
@@ -74,7 +103,20 @@ const NewMeal = () => {
           <button
             type="submit"
             className="text-gray-700 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
-          >Add</button>
+          >
+            {id ? 'Save' : 'Add'}
+          </button>
+          {
+            id ?
+              <button
+                onClick={() => navigate(HOME_PAGE)}
+                className="ms-2 focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+              >
+                Cancel
+              </button>
+              :
+              null
+          }
         </div>
       </form>
     </div>
